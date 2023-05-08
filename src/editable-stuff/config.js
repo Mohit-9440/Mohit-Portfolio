@@ -26,7 +26,7 @@ const mainBody = {
     },
     {
       image: 'fa-linkedin',
-      url: 'https://www.linkedin.com/in/mohit-s-8001081b8/',
+      url: 'https://www.linkedin.com/in/mohit-web-developer/',
     },
   ],
 };
@@ -54,7 +54,7 @@ const about = {
       different technologies and always interested in exploring new tools!
     </p>
   ),
-  resume: require('./MohitResume.pdf'),
+  resume: require('./Mohit.pdf'),
 };
 
 const repos = {
@@ -101,21 +101,23 @@ const skills = {
   show: true,
   heading: 'Skills',
   hardSkills: [
+    { name: 'HTML5', value: 80 },
+    { name: 'CSS3', value: 85 },
     { name: 'React', value: 80 },
-    { name: 'Node', value: 60 },
-    { name: 'Firebase', value: 70 },
-    { name: 'Data Structures', value: 70 },
     { name: 'JavaScript', value: 80 },
+    { name: 'Firebase', value: 70 },
+    { name: 'Node', value: 60 },
+    { name: 'MongoDb', value: 80 },
+    { name: 'Redux', value: 70 },
     { name: 'Tailwind CSS', value: 80 },
     { name: 'Git/GitHub', value: 90 },
-    { name: 'Deployment', value: 80 },
   ],
   softSkills: [
     { name: 'Goal-Oriented', value: 80 },
     { name: 'Collaboration', value: 90 },
-    { name: 'Positivity', value: 75 },
-    { name: 'Adaptability', value: 85 },
-    { name: 'Problem Solving', value: 75 },
+    { name: 'Leadership', value: 75 },
+    { name: 'Anchoring', value: 85 },
+    { name: 'Management', value: 75 },
     { name: 'Empathy', value: 90 },
     { name: 'Organization', value: 70 },
     { name: 'Creativity', value: 90 },
