@@ -1,73 +1,205 @@
 import React from 'react';
-import Typist from 'react-typist';
-import Container from 'react-bootstrap/Container';
-import Jumbotron from 'react-bootstrap/Jumbotron';
+import { motion } from 'framer-motion';
+import { Github, Linkedin, Instagram, Mail, Download } from 'lucide-react';
 
-const MainBody = React.forwardRef(
-  ({ gradient, title, message, icons }, ref) => {
-    return (
-      <Jumbotron
-        fluid
-        id='home'
-        style={{
-          background: `linear-gradient(136deg,${gradient})`,
-          backgroundSize: '1200% 1200%',
-        }}
-        className='title bg-transparent bgstyle text-light min-vh-100 d-flex align-content-center align-items-center flex-wrap m-0'
+const MainBody = React.forwardRef(({ gradient, title, message, icons }, ref) => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const floatingVariants = {
+    animate: {
+      y: [-10, 10, -10],
+      transition: {
+        duration: 3,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
+  };
+
+  const getIconComponent = (iconName) => {
+    switch (iconName) {
+      case 'fa-github':
+        return <Github className="w-6 h-6" />;
+      case 'fa-linkedin':
+        return <Linkedin className="w-6 h-6" />;
+      case 'fa-instagram':
+        return <Instagram className="w-6 h-6" />;
+      case 'fa-envelope':
+        return <Mail className="w-6 h-6" />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <section 
+      id="home" 
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      style={{
+        background: `linear-gradient(135deg, ${gradient})`,
+        backgroundSize: '400% 400%',
+        animation: 'gradientShift 15s ease infinite'
+      }}
+    >
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <motion.div
+          className="absolute top-20 left-20 w-32 h-32 bg-white/10 rounded-full blur-xl"
+          animate={{ x: [0, 100, 0], y: [0, -50, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute top-40 right-20 w-24 h-24 bg-white/10 rounded-full blur-xl"
+          animate={{ x: [0, -80, 0], y: [0, 60, 0] }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute bottom-20 left-1/3 w-40 h-40 bg-white/5 rounded-full blur-xl"
+          animate={{ x: [0, 120, 0], y: [0, -80, 0] }}
+          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+        />
+      </div>
+
+      {/* Main content */}
+      <motion.div
+        className="relative z-10 text-center px-4 sm:px-6 lg:px-8"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
       >
-        <div id='stars'></div>
-        <Container className='text-center'>
-          <h1 ref={ref} className='display-1'>
-            {title}
-          </h1>
-          <Typist className='lead typist' cursor={{ show: false }}>
-            {' '}
-            {message}
-          </Typist>
-          <div className='p-5'>
-            {icons.map((icon, index) => (
-              <a
-                key={`social-icon-${index}`}
-                target='_blank'
-                rel='noopener noreferrer'
-                href={icon.url}
-                aria-label={`My ${icon.image.split('-')[1]}`}
-              >
-                {icon.image === 'fa-upwork' ? (
-                  <svg
-                    viewBox='0 0 2500 2500'
-                    xmlns='http://www.w3.org/2000/svg'
-                    width={52}
-                    style={{ marginTop: '-23px' }}
-                    className='socialicons'
-                  >
-                    <path
-                      d='m2315.4 0h-2130.7c-102 0-184.7 80.2-184.7 179.1v2141.7c0 99 82.7 179.2 184.7 179.2h2130.7c102 0 184.6-80.3 184.6-179.2v-2141.7c0-98.9-82.6-179.1-184.6-179.1z'
-                      fill='#fff'
-                    />
-                    <path
-                      d='m1834.6 1453.7c-98.4 0-190.5-41.7-274.3-109.6l20.4-95.8.9-3.5c18.2-102 75.8-273.3 253-273.3 132.9 0 241 108.3 241 241.3-.4 132.6-108.5 240.9-241 240.9zm0-726.7c-226.4 0-401.9 147.3-473.2 389.5-109-163.7-191.4-360.2-239.7-525.7h-243.6v634.8c0 125.1-101.9 227.1-226.9 227.1s-226.8-102-226.8-227.1v-634.8h-243.7v634.8c-.9 260 210.5 473.4 470.1 473.4s471-213.4 471-473.4v-106.5c47.4 98.9 105.4 198.7 175.9 287.5l-149.3 702.7h249.5l108.1-509.7c94.8 60.8 203.8 98.9 328.8 98.9 267.2 0 484.7-219.2 484.7-486.7-.2-267-217.7-484.8-484.9-484.8z'
-                      // fill='#1d1d1d'
-                    />
-                  </svg>
-                ) : (
-                  <i className={`fab ${icon.image}  fa-3x socialicons`} />
-                )}
-              </a>
-            ))}
-          </div>
-          <a
-            className='btn btn-outline-light btn-lg '
-            href='#aboutme'
-            role='button'
-            aria-label='Learn more about me'
+        {/* Name */}
+        <motion.h1 
+          ref={ref}
+          className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6"
+          variants={itemVariants}
+        >
+          <span className="gradient-text">{title}</span>
+        </motion.h1>
+
+        {/* Typing animation for message */}
+        <motion.div 
+          className="text-xl sm:text-2xl lg:text-3xl text-gray-200 mb-8 font-light"
+          variants={itemVariants}
+        >
+          <TypewriterText text={message} />
+        </motion.div>
+
+        {/* Social icons */}
+        <motion.div 
+          className="flex justify-center items-center space-x-6 mb-12"
+          variants={itemVariants}
+        >
+          {icons.map((icon, index) => (
+            <motion.a
+              key={`social-icon-${index}`}
+              href={icon.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group p-3 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-110"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <div className="text-white group-hover:text-primary-300 transition-colors duration-300">
+                {getIconComponent(icon.image)}
+              </div>
+            </motion.a>
+          ))}
+        </motion.div>
+
+        {/* CTA Buttons */}
+        <motion.div 
+          className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+          variants={itemVariants}
+        >
+          <motion.a
+            href="#aboutme"
+            className="btn-primary inline-flex items-center gap-2"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            More about me
-          </a>
-        </Container>
-      </Jumbotron>
-    );
-  }
-);
+            <span>Learn More</span>
+            <motion.div
+              animate={{ x: [0, 5, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              ↓
+            </motion.div>
+          </motion.a>
+          
+          <motion.a
+            href="#contact"
+            className="btn-secondary inline-flex items-center gap-2"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <span>Get In Touch</span>
+            <Mail className="w-4 h-4" />
+          </motion.a>
+        </motion.div>
+      </motion.div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+        animate={{ y: [0, 10, 0] }}
+        transition={{ duration: 2, repeat: Infinity }}
+      >
+        <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
+          <motion.div
+            className="w-1 h-3 bg-white/60 rounded-full mt-2"
+            animate={{ y: [0, 12, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+        </div>
+      </motion.div>
+
+      <style jsx>{`
+        @keyframes gradientShift {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+      `}</style>
+    </section>
+  );
+});
+
+// Simple typewriter effect component
+const TypewriterText = ({ text }) => {
+  const [displayText, setDisplayText] = React.useState('');
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayText(prev => prev + text[currentIndex]);
+        setCurrentIndex(prev => prev + 1);
+      }, 100);
+      return () => clearTimeout(timeout);
+    }
+  }, [currentIndex, text]);
+
+  return <span>{displayText}</span>;
+};
 
 export default MainBody;

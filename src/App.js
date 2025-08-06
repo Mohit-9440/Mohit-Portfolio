@@ -1,5 +1,6 @@
-import React from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import React, { Suspense } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import {
   navBar,
   mainBody,
@@ -9,54 +10,67 @@ import {
   getInTouch,
   experiences,
 } from './editable-stuff/config.js';
-import MainBody from './components/home/MainBody';
-import AboutMe from './components/home/AboutMe';
-import Project from './components/home/Project';
-import Footer from './components/Footer';
-import Navbar from './components/Navbar';
-import Skills from './components/home/Skills';
-import GetInTouch from './components/home/GetInTouch.jsx';
 
-import Experience from './components/home/Experience';
+// Lazy load components for better performance
+const MainBody = React.lazy(() => import('./components/home/MainBody'));
+const AboutMe = React.lazy(() => import('./components/home/AboutMe'));
+const Project = React.lazy(() => import('./components/home/Project'));
+const Footer = React.lazy(() => import('./components/Footer'));
+const Navbar = React.lazy(() => import('./components/Navbar'));
+const Skills = React.lazy(() => import('./components/home/Skills'));
+const GetInTouch = React.lazy(() => import('./components/home/GetInTouch'));
+const Experience = React.lazy(() => import('./components/home/Experience'));
+
+// Loading component
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+  </div>
+);
 
 const Home = React.forwardRef((props, ref) => {
   return (
-    <>
-      <MainBody
-        gradient={mainBody.gradientColors}
-        title={`${mainBody.firstName} ${mainBody.middleName} ${mainBody.lastName}`}
-        message={mainBody.message}
-        icons={mainBody.icons}
-        ref={ref}
-      />
-      {about.show && (
-        <AboutMe
-          heading={about.heading}
-          message={about.message}
-          link={about.imageLink}
-          imgSize={about.imageSize}
-          resume={about.resume}
+    <div className="min-h-screen bg-gradient-to-br from-dark-50 to-dark-100 dark:from-dark-900 dark:to-dark-800">
+      <Suspense fallback={<LoadingSpinner />}>
+        <MainBody
+          gradient={mainBody.gradientColors}
+          title={`${mainBody.firstName} ${mainBody.middleName} ${mainBody.lastName}`}
+          message={mainBody.message}
+          icons={mainBody.icons}
+          ref={ref}
         />
-      )}
-      {experiences.show && <Experience experiences={experiences} />}
-      {repos.show && (
-        <Project
-          heading={repos.heading}
-          username={repos.gitHubUsername}
-          length={repos.reposLength}
-          specfic={repos.specificRepos}
-          projects={repos.projects}
-        />
-      )}
+        
+        {about.show && (
+          <AboutMe
+            heading={about.heading}
+            message={about.message}
+            link={about.imageLink}
+            imgSize={about.imageSize}
+            resume={about.resume}
+          />
+        )}
+        
+        {experiences.show && <Experience experiences={experiences} />}
+        
+        {repos.show && (
+          <Project
+            heading={repos.heading}
+            username={repos.gitHubUsername}
+            length={repos.reposLength}
+            specfic={repos.specificRepos}
+            projects={repos.projects}
+          />
+        )}
 
-      {skills.show && (
-        <Skills
-          heading={skills.heading}
-          hardSkills={skills.hardSkills}
-          softSkills={skills.softSkills}
-        />
-      )}
-    </>
+        {skills.show && (
+          <Skills
+            heading={skills.heading}
+            hardSkills={skills.hardSkills}
+            softSkills={skills.softSkills}
+          />
+        )}
+      </Suspense>
+    </div>
   );
 });
 
@@ -64,19 +78,34 @@ const App = () => {
   const titleRef = React.useRef();
 
   return (
-    <BrowserRouter basename={process.env.PUBLIC_URL + '/'}>
-      {navBar.show && <Navbar ref={titleRef} />}
-      <Route path='/' exact component={() => <Home ref={titleRef} />} />
-      <Footer>
-        {getInTouch.show && (
-          <GetInTouch
-            heading={getInTouch.heading}
-            message={getInTouch.message}
-            email={getInTouch.email}
-          />
-        )}
-      </Footer>
-    </BrowserRouter>
+    <HelmetProvider>
+      <Router basename={process.env.PUBLIC_URL + '/'}>
+        <div className="App">
+          <Suspense fallback={<LoadingSpinner />}>
+            {navBar.show && <Navbar ref={titleRef} />}
+          </Suspense>
+          
+          <Routes>
+            <Route 
+              path='/' 
+              element={<Home ref={titleRef} />} 
+            />
+          </Routes>
+          
+          <Suspense fallback={<LoadingSpinner />}>
+            <Footer>
+              {getInTouch.show && (
+                <GetInTouch
+                  heading={getInTouch.heading}
+                  message={getInTouch.message}
+                  email={getInTouch.email}
+                />
+              )}
+            </Footer>
+          </Suspense>
+        </div>
+      </Router>
+    </HelmetProvider>
   );
 };
 
